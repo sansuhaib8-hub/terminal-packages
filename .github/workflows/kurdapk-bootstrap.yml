@@ -15,6 +15,20 @@ jobs:
         with:
           targets: arm aarch64
 
+      - name: Install NDK r26b in container
+        run: |
+          ./scripts/run-docker.sh bash -c '
+            set -e
+            mkdir -p $HOME/lib
+            cd $HOME/lib
+            echo "Downloading NDK r26b..."
+            curl -L -o ndk.zip https://dl.google.com/android/repository/android-ndk-r26b-linux.zip
+            echo "Extracting..."
+            unzip -q ndk.zip
+            rm ndk.zip
+            ls -la $HOME/lib
+          '
+
       - name: Build core packages for aarch64 (via docker)
         run: |
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
