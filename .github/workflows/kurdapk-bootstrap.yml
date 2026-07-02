@@ -15,6 +15,22 @@ jobs:
         with:
           targets: arm aarch64
 
+      - name: Debug NDK location
+        run: |
+          ./scripts/run-docker.sh bash -c '
+            echo "=== HOME ==="
+            echo $HOME
+            echo "=== ls $HOME/lib ==="
+            ls -la $HOME/lib 2>&1
+            echo "=== source properties.sh and print NDK ==="
+            cd /home/builder/termux-packages
+            source scripts/properties.sh
+            echo "NDK=$NDK"
+            ls -la "$NDK" 2>&1
+            echo "=== find any ndk dirs ==="
+            find / -maxdepth 4 -iname "*ndk*" 2>/dev/null
+          '
+
       - name: Build core packages for aarch64 (via docker)
         run: |
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
