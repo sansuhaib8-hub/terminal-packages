@@ -1,0 +1,26 @@
+name: Build kurdapk terminal bootstrap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build core packages for aarch64
+        run: |
+          ./build-package.sh -a aarch64 -o output-aarch64 bash
+          ./build-package.sh -a aarch64 -o output-aarch64 coreutils
+          ./build-package.sh -a aarch64 -o output-aarch64 python
+          ./build-package.sh -a aarch64 -o output-aarch64 git
+
+      - name: List built debs
+        run: ls -la output-aarch64/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-bootstrap-aarch64
+          path: output-aarch64/*.deb
