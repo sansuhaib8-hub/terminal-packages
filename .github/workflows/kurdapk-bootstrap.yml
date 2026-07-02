@@ -10,12 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build core packages for aarch64
+      - name: Build core packages for aarch64 (via docker)
         run: |
-          ./build-package.sh -a aarch64 -o output-aarch64 bash
-          ./build-package.sh -a aarch64 -o output-aarch64 coreutils
-          ./build-package.sh -a aarch64 -o output-aarch64 python
-          ./build-package.sh -a aarch64 -o output-aarch64 git
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 coreutils
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 python
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 git
 
       - name: List built debs
         run: ls -la output-aarch64/
