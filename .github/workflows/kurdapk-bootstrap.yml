@@ -10,6 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup arm and aarch64 CPU emulators
+        uses: dbhi/qus/action@main
+        with:
+          targets: arm aarch64
+
       - name: Build core packages for aarch64 (via docker)
         run: |
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
