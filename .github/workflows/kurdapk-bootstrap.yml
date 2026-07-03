@@ -36,8 +36,12 @@ jobs:
 
       - name: Ensure host python3.11 is available
         run: |
-          ./scripts/run-docker.sh sudo apt-get update -y
-          ./scripts/run-docker.sh sudo apt-get install -y python3.11
+          ./scripts/run-docker.sh bash -c '
+            if ! command -v python3.11 >/dev/null 2>&1; then
+              sudo ln -sf "$(command -v python3)" /usr/local/bin/python3.11
+            fi
+            python3.11 --version
+          '
 
       - name: Build core packages for aarch64 (via docker)
         run: |
