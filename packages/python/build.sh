@@ -30,6 +30,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" ac_cv_func_ftime=no"
 # Avoid trying to use AT_EACCESS which is not defined:
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" ac_cv_func_faccessat=no"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --build=$TERMUX_BUILD_TUPLE --with-system-ffi --with-system-expat --without-ensurepip"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --without-tcltk"
 # Hard links does not work on Android 6:
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" ac_cv_func_linkat=no"
 # Do not assume getaddrinfo is buggy when cross compiling:
@@ -90,7 +91,7 @@ termux_step_post_make_install() {
 
 termux_step_post_massage() {
 	# Verify that desired modules have been included:
-	for module in _bz2 _curses _lzma _sqlite3 _ssl _tkinter zlib; do
+	for module in _bz2 _curses _lzma _sqlite3 _ssl zlib; do
 		if [ ! -f "${TERMUX_PREFIX}/lib/python${_MAJOR_VERSION}/lib-dynload/${module}".*.so ]; then
 			termux_error_exit "Python module library $module not built"
 		fi
