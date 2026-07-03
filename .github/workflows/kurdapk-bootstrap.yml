@@ -29,6 +29,11 @@ jobs:
             ls -la $HOME/lib
           '
 
+      - name: Install build tools (automake, autoconf, libtool)
+        run: |
+          ./scripts/run-docker.sh sudo apt-get update -y
+          ./scripts/run-docker.sh sudo apt-get install -y automake autoconf libtool m4 perl gettext
+
       - name: Build core packages for aarch64 (via docker)
         run: |
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
