@@ -38,6 +38,7 @@ TERMUX_PKG_RM_AFTER_INSTALL="share/man/man1/bashbug.1 bin/bashbug"
 
 termux_step_pre_configure() {
 	CFLAGS+=" -std=gnu17"
+	export CC_FOR_BUILD="gcc -std=gnu17"
 	declare -A PATCH_CHECKSUMS
 
 	PATCH_CHECKSUMS[001]=f42f2fee923bc2209f406a1892772121c467f44533bedfe00a176139da5d310a
