@@ -67,7 +67,7 @@ jobs:
           done
           cd ..
           cp -r bootstrap_raw/data/data/*/files/usr bootstrap/
-          zip -r kurdapk-bootstrap.zip bootstrap
+          tar czf kurdapk-bootstrap.tar.gz bootstrap
 
       - name: Assemble python zip
         run: |
@@ -80,7 +80,7 @@ jobs:
           done
           cd ..
           cp -r python-pkg-raw/data/data/*/files/usr python-pkg/
-          zip -r kurdapk-python.zip python-pkg
+          tar czf kurdapk-python.tar.gz python-pkg
 
       - name: Assemble git zip
         run: |
@@ -93,22 +93,22 @@ jobs:
           done
           cd ..
           cp -r git-pkg-raw/data/data/*/files/usr git-pkg/
-          zip -r kurdapk-git.zip git-pkg
+          tar czf kurdapk-git.tar.gz git-pkg
 
       - uses: actions/upload-artifact@v4
         with:
           name: kurdapk-bootstrap-zip
-          path: kurdapk-bootstrap.zip
+          path: kurdapk-bootstrap.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
           name: kurdapk-python-zip
-          path: kurdapk-python.zip
+          path: kurdapk-python.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
           name: kurdapk-git-zip
-          path: kurdapk-git.zip
+          path: kurdapk-git.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
