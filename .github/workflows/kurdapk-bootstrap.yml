@@ -67,7 +67,9 @@ jobs:
           done
           cd ..
           cp -r bootstrap_raw/data/data/*/files/usr bootstrap/
-          tar czf kurdapk-bootstrap.tar.gz bootstrap
+          python3 split_exec_data.py bootstrap/usr bootstrap-exec bootstrap-data/usr
+          zip -r kurdapk-bootstrap-exec.zip bootstrap-exec
+          tar czf kurdapk-bootstrap-data.tar.gz bootstrap-data
 
       - name: Assemble python zip
         run: |
@@ -80,7 +82,9 @@ jobs:
           done
           cd ..
           cp -r python-pkg-raw/data/data/*/files/usr python-pkg/
-          tar czf kurdapk-python.tar.gz python-pkg
+          python3 split_exec_data.py python-pkg/usr python-exec python-data/usr
+          zip -r kurdapk-python-exec.zip python-exec
+          tar czf kurdapk-python-data.tar.gz python-data
 
       - name: Assemble git zip
         run: |
@@ -93,22 +97,39 @@ jobs:
           done
           cd ..
           cp -r git-pkg-raw/data/data/*/files/usr git-pkg/
-          tar czf kurdapk-git.tar.gz git-pkg
+          python3 split_exec_data.py git-pkg/usr git-exec git-data/usr
+          zip -r kurdapk-git-exec.zip git-exec
+          tar czf kurdapk-git-data.tar.gz git-data
 
       - uses: actions/upload-artifact@v4
         with:
-          name: kurdapk-bootstrap-zip
-          path: kurdapk-bootstrap.tar.gz
+          name: kurdapk-bootstrap-exec
+          path: kurdapk-bootstrap-exec.zip
 
       - uses: actions/upload-artifact@v4
         with:
-          name: kurdapk-python-zip
-          path: kurdapk-python.tar.gz
+          name: kurdapk-bootstrap-data
+          path: kurdapk-bootstrap-data.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
-          name: kurdapk-git-zip
-          path: kurdapk-git.tar.gz
+          name: kurdapk-python-exec
+          path: kurdapk-python-exec.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-python-data
+          path: kurdapk-python-data.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-git-exec
+          path: kurdapk-git-exec.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-git-data
+          path: kurdapk-git-data.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
