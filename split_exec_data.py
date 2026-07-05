@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""
+Splits a package tree (e.g. bootstrap/usr) into:
+  - <name>-exec/    : ELF executables and .so shared libraries
+  - <name>-data/    : everything else (scripts, docs, config, python stdlib, etc.)
+Also writes <name>-exec/manifest.json mapping original relative path -> .so filename.
+"""
+import sys
+import os
+import json
+import subprocess
+
+def is_elf(path):
+    try:
+        with open(path, "rb") as f:
+            return f.read(4) == b"\x7fELF"
+    except Exception:
+        return False
+
+def main():
+    src_dir = sys.argv[1]      # e.g. bootstrap/usr
+    exec_dir = sys.argv[2]     # e.g. bootstrap-exec
+    data_dir = sys.argv[3]     # e.g. bootstrap-data/usr
+
+    os.makedirs(exec_dir, exist_ok=True)
+    os.makedirs(data_dir, exist_ok=True)
+
+    manifest = {}
+
+    for root, dirs, files in os.walk(src_dir):
+        for fname in files:
+            full_path = os.path.join(root, fname)
+            rel_path = os.path.relpath(full_path, src_dir)
+
+            if os.path.islink(full_path):
+                # Preserve symlinks in data tree (cheap, no exec needed to store the link itself)
+                link_target = os.readlink(full_path)
+                out_path = os.path.join(data_dir, rel_path)
+                os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                if os.path.lexists(out_path):
+                    os.remove(out_path)
+                os.symlink(link_target, out_path)
+                continue
+
+            if is_elf(full_path):
+                so_name = rel_path.replace("/", "_") + ".so"
+                out_path = os.path.join(exec_dir, so_name)
+                os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                subprocess.run(["cp", full_path, out_path], check=True)
+                manifest[rel_path] = so_name
+            else:
+                out_path = os.path.join(data_dir, rel_path)
+                os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                subprocess.run(["cp", full_path, out_path], check=True)
+
+    with open(os.path.join(exec_dir, "manifest.json"), "w") as f:
+        json.dump(manifest, f, indent=2)
+
+    print(f"Exec files: {len(manifest)}")
+    print(f"Done: {src_dir} -> {exec_dir} (exec) + {data_dir} (data)")
+
+if __name__ == "__main__":
+    main()
