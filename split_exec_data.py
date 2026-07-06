@@ -10,12 +10,14 @@ import os
 import json
 import subprocess
 
+
 def is_elf(path):
     try:
         with open(path, "rb") as f:
             return f.read(4) == b"\x7fELF"
     except Exception:
         return False
+
 
 def main():
     src_dir = sys.argv[1]      # e.g. bootstrap/usr
@@ -33,8 +35,21 @@ def main():
             rel_path = os.path.relpath(full_path, src_dir)
 
             if os.path.islink(full_path):
-                # Preserve symlinks in data tree (cheap, no exec needed to store the link itself)
                 link_target = os.readlink(full_path)
+                resolved = os.path.realpath(full_path)
+
+                # If the symlink resolves to a real .so file, copy that real
+                # file under the symlink's own name into exec_dir too, so the
+                # dynamic linker can find it by the exact NEEDED name
+                # (e.g. libreadline.so.8 -> real libreadline.so.8.2 content).
+                if os.path.isfile(resolved) and is_elf(resolved) and ".so" in fname:
+                    out_path = os.path.join(exec_dir, fname)
+                    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                    subprocess.run(["cp", resolved, out_path], check=True)
+                    manifest[rel_path] = fname
+                    continue
+
+                # Otherwise, preserve as a symlink in the data tree
                 out_path = os.path.join(data_dir, rel_path)
                 os.makedirs(os.path.dirname(out_path), exist_ok=True)
                 if os.path.lexists(out_path):
@@ -67,6 +82,7 @@ def main():
 
     print(f"Exec files: {len(manifest)}")
     print(f"Done: {src_dir} -> {exec_dir} (exec) + {data_dir} (data)")
+
 
 if __name__ == "__main__":
     main()
