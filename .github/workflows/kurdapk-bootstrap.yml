@@ -52,6 +52,10 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 python
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 git
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libandroid-support
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libiconv
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 ncurses
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 readline
 
       - name: List built debs
         run: ls -la output-aarch64/
@@ -60,7 +64,7 @@ jobs:
         run: |
           mkdir -p bootstrap_raw bootstrap
           cd bootstrap_raw
-          for deb in ../output-aarch64/bash_*.deb ../output-aarch64/coreutils_*.deb; do
+          for deb in ../output-aarch64/bash_*.deb ../output-aarch64/coreutils_*.deb ../output-aarch64/libandroid-support_*.deb ../output-aarch64/libiconv_*.deb ../output-aarch64/ncurses_*.deb ../output-aarch64/*readline*.deb; do
             ar x "$deb"
             tar xf data.tar.xz
             rm -f data.tar.xz control.tar.xz debian-binary
