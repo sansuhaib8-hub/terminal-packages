@@ -91,6 +91,7 @@ jobs:
           cd ..
           cp -r python-pkg-raw/data/data/*/files/usr python-pkg/
           python3 split_exec_data.py python-pkg/usr python-exec python-data/usr
+          patchelf --replace-needed libpython3.11.so.1.0 libpython3.11.so python-exec/bin_python3.11.so
           zip -r kurdapk-python-exec.zip python-exec
           tar czf kurdapk-python-data.tar.gz python-data
 
