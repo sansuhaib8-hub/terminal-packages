@@ -52,6 +52,7 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 python
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 git
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 pcre2
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libandroid-support /data/data/.built-packages/libiconv /data/data/.built-packages/ncurses /data/data/.built-packages/readline"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libandroid-support
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libiconv
@@ -99,7 +100,7 @@ jobs:
         run: |
           mkdir -p git-pkg-raw git-pkg
           cd git-pkg-raw
-          for deb in ../output-aarch64/git*.deb; do
+          for deb in ../output-aarch64/git*.deb ../output-aarch64/pcre2*.deb; do
             ar x "$deb"
             tar xf data.tar.xz
             rm -f data.tar.xz control.tar.xz debian-binary
