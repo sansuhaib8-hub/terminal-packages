@@ -52,6 +52,7 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 bash
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 python
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 git
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/pcre2"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 pcre2
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libandroid-support /data/data/.built-packages/libiconv /data/data/.built-packages/ncurses /data/data/.built-packages/readline"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libandroid-support
