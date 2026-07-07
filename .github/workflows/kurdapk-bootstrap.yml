@@ -73,6 +73,9 @@ jobs:
           cd ..
           cp -r bootstrap_raw/data/data/*/files/usr bootstrap/
           python3 split_exec_data.py bootstrap/usr bootstrap-exec bootstrap-data/usr
+          sudo apt-get install -y patchelf
+          patchelf --replace-needed libreadline.so.8 libreadline.so bootstrap-exec/bin_bash.so
+          patchelf --replace-needed libncursesw.so.6 libncursesw.so bootstrap-exec/libreadline.so
           zip -r kurdapk-bootstrap-exec.zip bootstrap-exec
           tar czf kurdapk-bootstrap-data.tar.gz bootstrap-data
 
