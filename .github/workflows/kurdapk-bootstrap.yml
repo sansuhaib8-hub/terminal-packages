@@ -60,8 +60,6 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 openssl
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libnghttp2"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libnghttp2
-          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libnghttp3"
-          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libnghttp3
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libssh2"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libssh2
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libexpat"
@@ -115,7 +113,7 @@ jobs:
         run: |
           mkdir -p git-pkg-raw git-pkg
           cd git-pkg-raw
-          for deb in ../output-aarch64/git*.deb ../output-aarch64/pcre2*.deb ../output-aarch64/zlib*.deb ../output-aarch64/openssl*.deb ../output-aarch64/libnghttp2*.deb ../output-aarch64/libnghttp3*.deb ../output-aarch64/libssh2*.deb ../output-aarch64/libexpat*.deb ../output-aarch64/libcurl*.deb; do
+          for deb in ../output-aarch64/git*.deb ../output-aarch64/pcre2*.deb ../output-aarch64/zlib*.deb ../output-aarch64/openssl*.deb ../output-aarch64/libnghttp2*.deb ../output-aarch64/libssh2*.deb ../output-aarch64/libexpat*.deb ../output-aarch64/libcurl*.deb; do
             ar x "$deb"
             tar xf data.tar.xz
             rm -f data.tar.xz control.tar.xz debian-binary
