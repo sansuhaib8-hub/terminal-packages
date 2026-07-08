@@ -121,6 +121,19 @@ jobs:
           cd ..
           cp -r git-pkg-raw/data/data/*/files/usr git-pkg/
           python3 split_exec_data.py git-pkg/usr git-exec git-data/usr
+          cd git-exec
+          for f in *.so; do
+            needed=$(patchelf --print-needed "$f" 2>/dev/null || true)
+            for n in $needed; do
+              case "$n" in
+                *.so.*)
+                  base=$(echo "$n" | sed -E 's/(\.so)\..*/\1/')
+                  patchelf --replace-needed "$n" "$base" "$f" 2>/dev/null || true
+                  ;;
+              esac
+            done
+          done
+          cd ..
           zip -r kurdapk-git-exec.zip git-exec
           tar czf kurdapk-git-data.tar.gz git-data
 
