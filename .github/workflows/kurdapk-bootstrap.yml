@@ -54,6 +54,20 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 git
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/pcre2"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 pcre2
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/zlib"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 zlib
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/openssl"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 openssl
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libnghttp2"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libnghttp2
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libnghttp3"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libnghttp3
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libssh2"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libssh2
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libexpat"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libexpat
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libcurl"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libcurl
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libandroid-support /data/data/.built-packages/libiconv /data/data/.built-packages/ncurses /data/data/.built-packages/readline"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libandroid-support
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libiconv
@@ -101,7 +115,7 @@ jobs:
         run: |
           mkdir -p git-pkg-raw git-pkg
           cd git-pkg-raw
-          for deb in ../output-aarch64/git*.deb ../output-aarch64/pcre2*.deb; do
+          for deb in ../output-aarch64/git*.deb ../output-aarch64/pcre2*.deb ../output-aarch64/zlib*.deb ../output-aarch64/openssl*.deb ../output-aarch64/libnghttp2*.deb ../output-aarch64/libnghttp3*.deb ../output-aarch64/libssh2*.deb ../output-aarch64/libexpat*.deb ../output-aarch64/libcurl*.deb; do
             ar x "$deb"
             tar xf data.tar.xz
             rm -f data.tar.xz control.tar.xz debian-binary
