@@ -154,6 +154,15 @@ jobs:
           name: kurdapk-git-data
           path: kurdapk-git-data.tar.gz
 
+      - name: Sanitize deb filenames (remove epoch colon, e.g. openssl-static_1:3.1.4)
+        run: |
+          cd output-aarch64
+          for f in *:*; do
+            [ -e "$f" ] || continue
+            mv -- "$f" "$(echo "$f" | tr ':' '-')"
+          done
+          cd ..
+
       - uses: actions/upload-artifact@v4
         with:
           name: kurdapk-bootstrap-aarch64
