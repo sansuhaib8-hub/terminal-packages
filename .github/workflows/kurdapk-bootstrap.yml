@@ -121,6 +121,8 @@ jobs:
           cd ..
           cp -r git-pkg-raw/data/data/*/files/usr git-pkg/
           python3 split_exec_data.py git-pkg/usr git-exec git-data/usr
+          curl -L -o /tmp/termux-elf-cleaner https://github.com/termux/termux-elf-cleaner/releases/download/v2.1.1/termux-elf-cleaner
+          chmod +x /tmp/termux-elf-cleaner
           cd git-exec
           for f in *.so; do
             needed=$(patchelf --print-needed "$f" 2>/dev/null || true)
@@ -133,6 +135,7 @@ jobs:
               esac
             done
           done
+          /tmp/termux-elf-cleaner *.so
           cd ..
           zip -r kurdapk-git-exec.zip git-exec
           tar czf kurdapk-git-data.tar.gz git-data
