@@ -1,7 +1,7 @@
 termux_setup_toolchain_26b() {
 	export CFLAGS=""
 	export CPPFLAGS=""
-	export LDFLAGS="-L${TERMUX_PREFIX}/lib"
+	export LDFLAGS="-L${TERMUX_PREFIX}/lib -Wl,--hash-style=both"
 
 	export AS=$TERMUX_HOST_PLATFORM-clang
 	export CC=$TERMUX_HOST_PLATFORM-clang
