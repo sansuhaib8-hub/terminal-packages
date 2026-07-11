@@ -71,6 +71,7 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libiconv
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 ncurses
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 readline
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/grep /data/data/.built-packages/sed /data/data/.built-packages/findutils /data/data/.built-packages/nano /data/data/.built-packages/tar /data/data/.built-packages/which /data/data/.built-packages/wget /data/data/.built-packages/less /data/data/.built-packages/unzip /data/data/.built-packages/gzip /data/data/.built-packages/diffutils /data/data/.built-packages/patch"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 grep
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 sed
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 findutils
