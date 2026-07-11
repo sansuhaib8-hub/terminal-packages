@@ -71,6 +71,18 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libiconv
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 ncurses
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 readline
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 grep
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 sed
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 findutils
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 nano
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 tar
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 which
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 wget
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 less
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 unzip
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 gzip
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 diffutils
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 patch
 
       - name: List built debs
         run: ls -la output-aarch64/
@@ -140,6 +152,35 @@ jobs:
           zip -r kurdapk-git-exec.zip git-exec
           tar czf kurdapk-git-data.tar.gz git-data
 
+      - name: Assemble extra-tools zip
+        run: |
+          mkdir -p extra-pkg-raw extra-pkg
+          cd extra-pkg-raw
+          for deb in ../output-aarch64/grep_*.deb ../output-aarch64/sed_*.deb ../output-aarch64/findutils_*.deb ../output-aarch64/nano_*.deb ../output-aarch64/tar_*.deb ../output-aarch64/which_*.deb ../output-aarch64/wget_*.deb ../output-aarch64/less_*.deb ../output-aarch64/unzip_*.deb ../output-aarch64/gzip_*.deb ../output-aarch64/diffutils_*.deb ../output-aarch64/patch_*.deb; do
+            ar x "$deb"
+            tar xf data.tar.xz
+            rm -f data.tar.xz control.tar.xz debian-binary
+          done
+          cd ..
+          cp -r extra-pkg-raw/data/data/*/files/usr extra-pkg/
+          python3 split_exec_data.py extra-pkg/usr extra-exec extra-data/usr
+          cd extra-exec
+          for f in *.so; do
+            needed=$(patchelf --print-needed "$f" 2>/dev/null || true)
+            for n in $needed; do
+              case "$n" in
+                *.so.*)
+                  base=$(echo "$n" | sed -E 's/(\.so)\..*/\1/')
+                  patchelf --replace-needed "$n" "$base" "$f" 2>/dev/null || true
+                  ;;
+              esac
+            done
+          done
+          /tmp/termux-elf-cleaner *.so
+          cd ..
+          zip -r kurdapk-extra-exec.zip extra-exec
+          tar czf kurdapk-extra-data.tar.gz extra-data
+
       - uses: actions/upload-artifact@v4
         with:
           name: kurdapk-bootstrap-exec
@@ -169,6 +210,16 @@ jobs:
         with:
           name: kurdapk-git-data
           path: kurdapk-git-data.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-extra-exec
+          path: kurdapk-extra-exec.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-extra-data
+          path: kurdapk-extra-data.tar.gz
 
       - name: Sanitize deb filenames (remove epoch colon, e.g. openssl-static_1:3.1.4)
         run: |
