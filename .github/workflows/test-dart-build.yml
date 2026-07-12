@@ -1,0 +1,28 @@
+name: Test build dart for aarch64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup arm and aarch64 CPU emulators
+        uses: dbhi/qus/action@main
+        with:
+          targets: arm aarch64
+
+      - name: Build dart for aarch64 (via docker)
+        run: |
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-dart-test dart
+
+      - name: List built debs
+        run: ls -la output-dart-test/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dart-test-debs
+          path: output-dart-test/*.deb
