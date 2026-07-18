@@ -71,10 +71,11 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libiconv
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 ncurses
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 readline
-          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libandroid-glob /data/data/.built-packages/util-linux /data/data/.built-packages/libcurl"
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/libandroid-glob /data/data/.built-packages/util-linux /data/data/.built-packages/libcurl /data/data/.built-packages/libbz2"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libandroid-glob
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 util-linux
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libcurl
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libbz2
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/grep /data/data/.built-packages/sed /data/data/.built-packages/findutils /data/data/.built-packages/nano /data/data/.built-packages/tar /data/data/.built-packages/which /data/data/.built-packages/wget /data/data/.built-packages/less /data/data/.built-packages/unzip /data/data/.built-packages/gzip /data/data/.built-packages/diffutils /data/data/.built-packages/patch"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 grep
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 sed
@@ -161,7 +162,7 @@ jobs:
         run: |
           mkdir -p extra-pkg-raw extra-pkg
           cd extra-pkg-raw
-          for deb in ../output-aarch64/grep_*.deb ../output-aarch64/sed_*.deb ../output-aarch64/findutils_*.deb ../output-aarch64/nano_*.deb ../output-aarch64/tar_*.deb ../output-aarch64/which_*.deb ../output-aarch64/wget_*.deb ../output-aarch64/less_*.deb ../output-aarch64/unzip_*.deb ../output-aarch64/gzip_*.deb ../output-aarch64/diffutils_*.deb ../output-aarch64/patch_*.deb ../output-aarch64/libandroid-glob_*.deb ../output-aarch64/libuuid_*.deb ../output-aarch64/curl_*.deb; do
+          for deb in ../output-aarch64/grep_*.deb ../output-aarch64/sed_*.deb ../output-aarch64/findutils_*.deb ../output-aarch64/nano_*.deb ../output-aarch64/tar_*.deb ../output-aarch64/which_*.deb ../output-aarch64/wget_*.deb ../output-aarch64/less_*.deb ../output-aarch64/unzip_*.deb ../output-aarch64/gzip_*.deb ../output-aarch64/diffutils_*.deb ../output-aarch64/patch_*.deb ../output-aarch64/libandroid-glob_*.deb ../output-aarch64/libuuid_*.deb ../output-aarch64/curl_*.deb ../output-aarch64/libbz2_*.deb; do
             ar x "$deb"
             tar xf data.tar.xz
             rm -f data.tar.xz control.tar.xz debian-binary
