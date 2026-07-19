@@ -78,6 +78,8 @@ termux_setup_toolchain_26b() {
 	# Basic hardening.
 	CFLAGS+=" -fstack-protector-strong"
 	LDFLAGS+=" -Wl,-z,relro,-z,now"
+	# 16KB page size support (Android 15+)
+	LDFLAGS+=" -Wl,-z,max-page-size=16384"
 
 	if [ "$TERMUX_DEBUG_BUILD" = "true" ]; then
 		CFLAGS+=" -g3 -O1"
