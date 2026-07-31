@@ -32,3 +32,7 @@ scripts/*.log
 
 # Temp .git directories for packages built from local sources "file://"
 /*.git
+kurdapk-git.zip
+kurdapk-rootfs-aarch64.zip
+*.zip
+*.tar.gz

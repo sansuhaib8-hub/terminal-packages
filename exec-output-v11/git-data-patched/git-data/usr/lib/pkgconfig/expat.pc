@@ -1,0 +1,12 @@
+prefix=/data/data/com.kurd.apkapp.kurdapk/files/usr
+exec_prefix=${prefix}
+libdir=/data/data/com.kurd.apkapp.kurdapk/files/usr/lib
+includedir=${prefix}/include
+
+Name: expat
+Version: 2.5.0
+Description: expat XML parser
+URL: https://libexpat.github.io/
+Libs: -L${libdir} -lexpat
+Libs.private: -lm
+Cflags: -I${includedir}

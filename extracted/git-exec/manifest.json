@@ -1,0 +1,11 @@
+{
+  "libexec/git-core/git-imap-send": "libexec_git-core_git-imap-send.so",
+  "libexec/git-core/git-http-fetch": "libexec_git-core_git-http-fetch.so",
+  "libexec/git-core/scalar": "libexec_git-core_scalar.so",
+  "libexec/git-core/git-daemon": "libexec_git-core_git-daemon.so",
+  "libexec/git-core/git": "libexec_git-core_git.so",
+  "libexec/git-core/git-remote-http": "libexec_git-core_git-remote-http.so",
+  "libexec/git-core/git-http-backend": "libexec_git-core_git-http-backend.so",
+  "libexec/git-core/git-sh-i18n--envsubst": "libexec_git-core_git-sh-i18n--envsubst.so",
+  "bin/scalar": "bin_scalar.so"
+}

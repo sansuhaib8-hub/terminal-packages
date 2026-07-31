@@ -89,6 +89,8 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 gzip
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 diffutils
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 patch
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/termux-exec"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 termux-exec
 
       - name: List built debs
         run: ls -la output-aarch64/
@@ -187,6 +189,25 @@ jobs:
           zip -r kurdapk-extra-exec.zip extra-exec
           tar czf kurdapk-extra-data.tar.gz extra-data
 
+      - name: Assemble termux-exec zip
+        run: |
+          mkdir -p termux-exec-pkg-raw termux-exec-pkg
+          cd termux-exec-pkg-raw
+          for deb in ../output-aarch64/termux-exec_*.deb; do
+            ar x "$deb"
+            tar xf data.tar.xz
+            rm -f data.tar.xz control.tar.xz debian-binary
+          done
+          cd ..
+          cp -r termux-exec-pkg-raw/data/data/*/files/usr termux-exec-pkg/
+          echo "--- termux-exec contents ---"
+          find termux-exec-pkg -type f
+          python3 split_exec_data.py termux-exec-pkg/usr termux-exec-exec termux-exec-data/usr
+          echo "--- files after split ---"
+          ls -la termux-exec-exec/
+          zip -r kurdapk-termux-exec-exec.zip termux-exec-exec
+          tar czf kurdapk-termux-exec-data.tar.gz termux-exec-data
+
       - uses: actions/upload-artifact@v4
         with:
           name: kurdapk-bootstrap-exec
@@ -226,6 +247,16 @@ jobs:
         with:
           name: kurdapk-extra-data
           path: kurdapk-extra-data.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-termux-exec-exec
+          path: kurdapk-termux-exec-exec.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-termux-exec-data
+          path: kurdapk-termux-exec-data.tar.gz
 
       - name: Sanitize deb filenames (remove epoch colon, e.g. openssl-static_1:3.1.4)
         run: |

@@ -1,0 +1,18 @@
+{
+  "libexec/rmt": "libexec_rmt.so",
+  "libexec/frcode": "libexec_frcode.so",
+  "bin/diff3": "bin_diff3.so",
+  "bin/less": "bin_less.so",
+  "bin/xargs": "bin_xargs.so",
+  "bin/cmp": "bin_cmp.so",
+  "bin/diff": "bin_diff.so",
+  "bin/patch": "bin_patch.so",
+  "bin/gzip": "bin_gzip.so",
+  "bin/sdiff": "bin_sdiff.so",
+  "bin/nano": "bin_nano.so",
+  "bin/grep": "bin_grep.so",
+  "bin/find": "bin_find.so",
+  "bin/sed": "bin_sed.so",
+  "bin/lessecho": "bin_lessecho.so",
+  "bin/lesskey": "bin_lesskey.so"
+}
