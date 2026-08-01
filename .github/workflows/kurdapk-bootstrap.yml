@@ -111,7 +111,7 @@ jobs:
           patchelf --replace-needed libreadline.so.8 libreadline.so bootstrap-exec/bin_bash.so
           patchelf --replace-needed libncursesw.so.6 libncursesw.so bootstrap-exec/libreadline.so
           sync
-          zip -r kurdapk-bootstrap-exec.zip bootstrap-exec
+          zip -r -y kurdapk-bootstrap-exec.zip bootstrap-exec
           tar czf kurdapk-bootstrap-data.tar.gz bootstrap-data
 
       - name: Assemble python zip
@@ -128,7 +128,7 @@ jobs:
           python3 split_exec_data.py python-pkg/usr python-exec python-data/usr
           patchelf --replace-needed libpython3.11.so.1.0 libpython3.11.so python-exec/bin_python3.11.so
           sync
-          zip -r kurdapk-python-exec.zip python-exec
+          zip -r -y kurdapk-python-exec.zip python-exec
           tar czf kurdapk-python-data.tar.gz python-data
 
       - name: Assemble git zip
@@ -160,7 +160,7 @@ jobs:
           /tmp/termux-elf-cleaner *.so
           cd ..
           sync
-          zip -r kurdapk-git-exec.zip git-exec
+          zip -r -y kurdapk-git-exec.zip git-exec
           tar czf kurdapk-git-data.tar.gz git-data
 
       - name: Assemble extra-tools zip
@@ -190,7 +190,7 @@ jobs:
           /tmp/termux-elf-cleaner *.so
           cd ..
           sync
-          zip -r kurdapk-extra-exec.zip extra-exec
+          zip -r -y kurdapk-extra-exec.zip extra-exec
           tar czf kurdapk-extra-data.tar.gz extra-data
 
       - name: Assemble termux-exec zip
@@ -210,7 +210,7 @@ jobs:
           echo "--- files after split ---"
           ls -la termux-exec-exec/
           sync
-          zip -r kurdapk-termux-exec-exec.zip termux-exec-exec
+          zip -r -y kurdapk-termux-exec-exec.zip termux-exec-exec
           tar czf kurdapk-termux-exec-data.tar.gz termux-exec-data
 
       - uses: actions/upload-artifact@v4
