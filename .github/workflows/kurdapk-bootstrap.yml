@@ -111,7 +111,16 @@ jobs:
           patchelf --replace-needed libreadline.so.8 libreadline.so bootstrap-exec/bin_bash.so
           patchelf --replace-needed libncursesw.so.6 libncursesw.so bootstrap-exec/libreadline.so
           sync
-          zip -r -y kurdapk-bootstrap-exec.zip bootstrap-exec
+          echo "--- diagnostic: total entries via find ---"
+          find bootstrap-exec | wc -l
+          echo "--- diagnostic: broken symlinks ---"
+          find bootstrap-exec -type l ! -exec test -e {} \; -print
+          echo "--- diagnostic: duplicate basenames (case-insensitive) ---"
+          find bootstrap-exec -mindepth 1 -exec basename {} \; | sort -f | uniq -di
+          echo "--- diagnostic: full listing ---"
+          find bootstrap-exec -mindepth 1 -exec ls -la {} \;
+          echo "--- running zip verbose ---"
+          zip -r -y -v kurdapk-bootstrap-exec.zip bootstrap-exec
           tar czf kurdapk-bootstrap-data.tar.gz bootstrap-data
 
       - name: Assemble python zip
