@@ -111,16 +111,10 @@ jobs:
           patchelf --replace-needed libreadline.so.8 libreadline.so bootstrap-exec/bin_bash.so
           patchelf --replace-needed libncursesw.so.6 libncursesw.so bootstrap-exec/libreadline.so
           sync
-          echo "--- diagnostic: total entries via find ---"
-          find bootstrap-exec | wc -l
-          echo "--- diagnostic: broken symlinks ---"
-          find bootstrap-exec -type l ! -exec test -e {} \; -print
-          echo "--- diagnostic: duplicate basenames (case-insensitive) ---"
-          find bootstrap-exec -mindepth 1 -exec basename {} \; | sort -f | uniq -di
-          echo "--- diagnostic: full listing ---"
-          find bootstrap-exec -mindepth 1 -exec ls -la {} \;
-          echo "--- running zip verbose ---"
+          find bootstrap-exec -type f -exec chmod 755 {} \;
+          rm -f kurdapk-bootstrap-exec.zip
           zip -r -y -v kurdapk-bootstrap-exec.zip bootstrap-exec
+          unzip -t kurdapk-bootstrap-exec.zip > /dev/null
           tar czf kurdapk-bootstrap-data.tar.gz bootstrap-data
 
       - name: Assemble python zip
@@ -137,7 +131,10 @@ jobs:
           python3 split_exec_data.py python-pkg/usr python-exec python-data/usr
           patchelf --replace-needed libpython3.11.so.1.0 libpython3.11.so python-exec/bin_python3.11.so
           sync
+          find python-exec -type f -exec chmod 755 {} \;
+          rm -f kurdapk-python-exec.zip
           zip -r -y kurdapk-python-exec.zip python-exec
+          unzip -t kurdapk-python-exec.zip > /dev/null
           tar czf kurdapk-python-data.tar.gz python-data
 
       - name: Assemble git zip
@@ -169,7 +166,10 @@ jobs:
           /tmp/termux-elf-cleaner *.so
           cd ..
           sync
+          find git-exec -type f -exec chmod 755 {} \;
+          rm -f kurdapk-git-exec.zip
           zip -r -y kurdapk-git-exec.zip git-exec
+          unzip -t kurdapk-git-exec.zip > /dev/null
           tar czf kurdapk-git-data.tar.gz git-data
 
       - name: Assemble extra-tools zip
@@ -199,7 +199,10 @@ jobs:
           /tmp/termux-elf-cleaner *.so
           cd ..
           sync
+          find extra-exec -type f -exec chmod 755 {} \;
+          rm -f kurdapk-extra-exec.zip
           zip -r -y kurdapk-extra-exec.zip extra-exec
+          unzip -t kurdapk-extra-exec.zip > /dev/null
           tar czf kurdapk-extra-data.tar.gz extra-data
 
       - name: Assemble termux-exec zip
@@ -219,7 +222,10 @@ jobs:
           echo "--- files after split ---"
           ls -la termux-exec-exec/
           sync
+          find termux-exec-exec -type f -exec chmod 755 {} \;
+          rm -f kurdapk-termux-exec-exec.zip
           zip -r -y kurdapk-termux-exec-exec.zip termux-exec-exec
+          unzip -t kurdapk-termux-exec-exec.zip > /dev/null
           tar czf kurdapk-termux-exec-data.tar.gz termux-exec-data
 
       - uses: actions/upload-artifact@v4
