@@ -91,6 +91,8 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 patch
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/termux-exec"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 termux-exec
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/android-tools"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 android-tools
 
       - name: List built debs
         run: ls -la output-aarch64/
@@ -227,6 +229,52 @@ jobs:
           zip -r -y kurdapk-termux-exec-exec.zip termux-exec-exec
           unzip -t kurdapk-termux-exec-exec.zip > /dev/null
           tar czf kurdapk-termux-exec-data.tar.gz termux-exec-data
+
+      - name: Assemble adb zip
+        run: |
+          mkdir -p adb-pkg-raw adb-pkg
+          cd adb-pkg-raw
+          for deb in ../output-aarch64/android-tools_*.deb; do
+            ar x "$deb"
+            tar xf data.tar.xz
+            rm -f data.tar.xz control.tar.xz debian-binary
+          done
+          cd ..
+          cp -r adb-pkg-raw/data/data/*/files/usr adb-pkg/
+          python3 split_exec_data.py adb-pkg/usr adb-exec adb-data/usr
+          cd adb-exec
+          for f in *.so.*; do
+            [ -e "$f" ] || continue
+            base=$(echo "$f" | sed -E 's/(\.so)\.([0-9]+).*/\1__\2/')
+            newname="${base}.so"
+            for dep_f in *.so; do
+              patchelf --replace-needed "$f" "$newname" "$dep_f" 2>/dev/null || true
+            done
+            mv -- "$f" "$newname"
+          done
+          /tmp/termux-elf-cleaner *.so 2>/dev/null || true
+          cd ..
+          sync
+          echo "--- diagnostic: LOAD segment alignment (must be 0x1000) ---"
+          for f in adb-exec/*.so; do
+            echo "== $f =="
+            readelf -l "$f" 2>/dev/null | grep LOAD
+          done
+          find adb-exec -type f -exec chmod 755 {} \;
+          rm -f kurdapk-adb-exec.zip
+          zip -r -y kurdapk-adb-exec.zip adb-exec
+          unzip -t kurdapk-adb-exec.zip > /dev/null
+          tar czf kurdapk-adb-data.tar.gz adb-data
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-adb-exec
+          path: kurdapk-adb-exec.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurdapk-adb-data
+          path: kurdapk-adb-data.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
