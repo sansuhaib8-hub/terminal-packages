@@ -16,4 +16,5 @@ termux_step_pre_configure() {
 	termux_setup_golang
 
 	LDFLAGS+=" $($TERMUX_SCRIPTDIR/packages/libprotobuf/interface_link_libraries.sh)"
+    LDFLAGS+=" -Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096"
 }
