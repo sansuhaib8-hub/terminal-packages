@@ -93,6 +93,12 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 termux-exec
           ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/android-tools"
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 android-tools
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/zstd /data/data/.built-packages/brotli /data/data/.built-packages/liblz4 /data/data/.built-packages/libusb /data/data/.built-packages/libprotobuf"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 zstd
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 brotli
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 liblz4
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libusb
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libprotobuf
 
       - name: List built debs
         run: ls -la output-aarch64/
@@ -234,7 +240,8 @@ jobs:
         run: |
           mkdir -p adb-pkg-raw adb-pkg
           cd adb-pkg-raw
-          for deb in ../output-aarch64/android-tools_*.deb; do
+          for deb in ../output-aarch64/android-tools_*.deb ../output-aarch64/zstd_*.deb ../output-aarch64/brotli_*.deb ../output-aarch64/liblz4_*.deb ../output-aarch64/libusb_*.deb ../output-aarch64/libprotobuf_*.deb; do
+            [ -e "$deb" ] || continue
             ar x "$deb"
             tar xf data.tar.xz
             rm -f data.tar.xz control.tar.xz debian-binary
@@ -247,7 +254,8 @@ jobs:
             [ -e "$f" ] || continue
             base=$(echo "$f" | sed -E 's/(\.so)\.([0-9]+).*/\1__\2/')
             newname="${base}.so"
-            for dep_f in *.so; do
+            for dep_f in *.so *.so.*; do
+              [ "$dep_f" = "$f" ] && continue
               patchelf --replace-needed "$f" "$newname" "$dep_f" 2>/dev/null || true
             done
             mv -- "$f" "$newname"
@@ -255,10 +263,12 @@ jobs:
           /tmp/termux-elf-cleaner *.so 2>/dev/null || true
           cd ..
           sync
+          echo "--- diagnostic: NEEDED entries for adb ---"
+          readelf -d adb-exec/bin_adb.so 2>/dev/null | grep NEEDED
           echo "--- diagnostic: LOAD segment alignment (must be 0x1000) ---"
           for f in adb-exec/*.so; do
             echo "== $f =="
-            readelf -l "$f" 2>/dev/null | grep LOAD
+            readelf -l "$f" 2>/dev/null | grep LOAD | awk '{print $NF}'
           done
           find adb-exec -type f -exec chmod 755 {} \;
           rm -f kurdapk-adb-exec.zip
