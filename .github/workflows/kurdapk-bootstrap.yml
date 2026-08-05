@@ -252,8 +252,9 @@ jobs:
           cd adb-exec
           for f in *.so.*; do
             [ -e "$f" ] || continue
-            base=$(echo "$f" | sed -E 's/(\.so)\.([0-9]+).*/\1__\2/')
-            newname="${base}.so"
+            name_no_ext=$(echo "$f" | sed -E 's/\.so\..*//')
+            version=$(echo "$f" | sed -E 's/^[^.]*\.so\.([0-9]+).*/\1/')
+            newname="${name_no_ext}__${version}.so"
             for dep_f in *.so *.so.*; do
               [ "$dep_f" = "$f" ] && continue
               patchelf --replace-needed "$f" "$newname" "$dep_f" 2>/dev/null || true
