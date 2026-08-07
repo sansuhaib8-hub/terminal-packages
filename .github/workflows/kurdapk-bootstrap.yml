@@ -99,6 +99,8 @@ jobs:
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 liblz4
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libusb
           ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 libprotobuf
+          ./scripts/run-docker.sh bash -c "rm -f /data/data/.built-packages/abseil-cpp"
+          ./scripts/run-docker.sh ./build-package.sh -a aarch64 -o output-aarch64 abseil-cpp
 
       - name: List built debs
         run: ls -la output-aarch64/
@@ -240,7 +242,7 @@ jobs:
         run: |
           mkdir -p adb-pkg-raw adb-pkg
           cd adb-pkg-raw
-          for deb in ../output-aarch64/android-tools_*.deb ../output-aarch64/zstd_*.deb ../output-aarch64/brotli_*.deb ../output-aarch64/liblz4_*.deb ../output-aarch64/libusb_*.deb ../output-aarch64/libprotobuf_*.deb; do
+          for deb in ../output-aarch64/android-tools_*.deb ../output-aarch64/zstd_*.deb ../output-aarch64/brotli_*.deb ../output-aarch64/liblz4_*.deb ../output-aarch64/libusb_*.deb ../output-aarch64/libprotobuf_*.deb ../output-aarch64/abseil-cpp_*.deb; do
             [ -e "$deb" ] || continue
             ar x "$deb"
             tar xf data.tar.xz
